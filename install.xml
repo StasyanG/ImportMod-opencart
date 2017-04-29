@@ -1,0 +1,197 @@
+<modification>
+	<name>ImportMod by StasyanG</name>
+	<version>0.2.0</version>
+	<link>http://github.com/StasyanG</link>
+	<author>StasyanG</author>
+	<code>stasyang_importmod</code>
+
+	<file path="admin/controller/common/column_left.php">
+		<operation>
+			<search><![CDATA[if ($this->user->hasPermission('access', 'tool/log')) {]]></search>
+			<add position="before"><![CDATA[
+			$this->load->config('stasyang/import_mod');
+			$this->load->language($this->config->get('importmod_path'));
+			if ($this->user->hasPermission('access', $this->config->get('importmod_path'))) {
+				$tool[] = array(
+					'name'	   => $this->language->get('menu_title'),
+					'href'     => $this->url->link($this->config->get('importmod_path'),
+					'token=' . $this->session->data['token'], true),
+					'children' => array()
+				);
+			}
+			]]></add>
+		</operation>
+	</file> 
+
+	<file path="admin/model/tool/image.php">
+		<operation>
+			<search><![CDATA[public function resize($filename, $width, $height) {]]></search>
+			<add position="before"><![CDATA[
+			public function downloadImageFromURL($url, $flag = 1) {
+				// flag: 1 - download image, 0 - do not download image (return just path)
+				if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+				    return null;
+				}
+
+				$supported_extensions = ['jpg', 'png'];
+				$extension = substr($url, strrpos($url, ".") + 1);
+				if(!in_array($extension, $supported_extensions)) {
+					echo 'Unsupported file type: '.$extension;
+					return null;
+				}
+
+				if($this->curl_get_file_size($url)/1024/1024 > 5) {
+					echo 'File must have size not more than 5 MB';
+					return null;
+				}
+
+				$dir = 'catalog/products/';
+
+				if (!is_dir(DIR_IMAGE . $dir)) {
+					@mkdir(DIR_IMAGE . $dir, 0777);
+				}
+
+				$filename = uniqid(rand(), true).'.'.$extension;
+				while(is_file(DIR_IMAGE . $dir . $filename))
+					$filename = uniqid(rand(), true).'.'.$extension;
+
+				if($flag) {
+					set_time_limit(0);
+					//This is the file where we save the    information
+					$fp = fopen (DIR_IMAGE . $dir . $filename, 'w+');
+					//Here is the file we are downloading, replace spaces with %20
+					$ch = curl_init(str_replace(" ","%20",$url));
+					curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+					// write curl response to file
+					curl_setopt($ch, CURLOPT_FILE, $fp); 
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+					// get curl response
+					if(curl_exec($ch) === FALSE) {
+						curl_close($ch);
+						fclose($fp);
+						return null;
+					} else {
+						curl_close($ch);
+						fclose($fp);
+						return $dir . $filename;
+					}
+				} else {
+					if($this->url_exists( $url )) {
+						$image_path = $this->addImageToQueue( $url, $dir . $filename );
+						if($image_path) {
+							return $image_path;
+						}
+					}
+					return null;
+				}		
+			}
+			
+			protected function addImageToQueue( $uri, $local_path ) {
+				$sql = "INSERT INTO `".DB_PREFIX."images_queue` (`uri`, `local_path`) VALUES ";
+				$sql .= "( '$uri', '$local_path' );";
+				
+				$idd = $this->db->getLastId();
+				$this->db->query( $sql );
+				if($idd != $this->db->getLastId()) {
+					return $local_path;
+				} else {
+					return null;
+				}
+			}
+			
+			public function processImageQueue() {
+				$query = $this->db->query( "SELECT * FROM `".DB_PREFIX."images_queue`");
+				$count = 0;
+				if($query->num_rows > 0) {
+					foreach($query->rows as $row) {
+						
+						$id = $row['id'];
+						$uri = $row['uri'];
+						$local_path = $row['local_path'];
+						
+						set_time_limit(0);
+						//This is the file where we save the    information
+						$fp = fopen (DIR_IMAGE . $local_path, 'w+');
+						//Here is the file we are downloading, replace spaces with %20
+						$ch = curl_init(str_replace(" ","%20",$uri));
+						curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+						// write curl response to file
+						curl_setopt($ch, CURLOPT_FILE, $fp); 
+						curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+						// get curl response
+						if(curl_exec($ch) === FALSE) {
+							curl_close($ch);
+							fclose($fp);
+						} else {
+							curl_close($ch);
+							fclose($fp);
+							$count = $count + 1;
+						}
+						$this->db->query( "DELETE FROM `".DB_PREFIX."images_queue` WHERE id=".$id);
+					}
+				}
+				return $count;
+			}
+
+			public function deleteImage( $path ) {
+				if(is_file(DIR_IMAGE . $path)) {
+					return unlink(DIR_IMAGE . $path);
+				}
+				return false;
+			}
+
+			function curl_get_file_size( $url ) {
+				// Assume failure.
+				$result = -1;
+
+				$curl = curl_init( $url );
+
+				// Issue a HEAD request and follow any redirects.
+				curl_setopt( $curl, CURLOPT_NOBODY, true );
+				curl_setopt( $curl, CURLOPT_HEADER, true );
+				curl_setopt( $curl, CURLOPT_RETURNTRANSFER, true );
+				curl_setopt( $curl, CURLOPT_FOLLOWLOCATION, true );
+
+				$data = curl_exec( $curl );
+				curl_close( $curl );
+
+				if( $data ) {
+				$content_length = "unknown";
+				$status = "unknown";
+
+				if( preg_match( "/^HTTP\/1\.[01] (\d\d\d)/", $data, $matches ) ) {
+				  $status = (int)$matches[1];
+				}
+
+				if( preg_match( "/Content-Length: (\d+)/", $data, $matches ) ) {
+				  $content_length = (int)$matches[1];
+				}
+
+				// http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+				if( $status == 200 || ($status > 300 && $status <= 308) ) {
+				  $result = $content_length;
+				}
+				}
+
+				return $result;
+			}
+			
+			function url_exists($url) {
+				$handle = curl_init($url);
+				if (!$handle) return false;
+				curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+				/* Get the HTML or whatever is linked in $url. */
+				$response = curl_exec($handle);
+				
+				/* Check for 404 (file not found). */
+				$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+				if($httpCode == 404) {
+				    return false;
+				} else {
+					return true;
+				}
+			}
+			]]></add>
+		</operation>
+	</file>
+</modification>

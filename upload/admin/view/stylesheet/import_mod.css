@@ -1,0 +1,58 @@
+table.form {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+table.form > tbody > tr > td:first-child {
+	width: 200px;
+}
+table.form > tbody > tr > td {
+	padding: 10px;
+	color: #000000;
+	border-bottom: 1px dotted #CCCCCC;
+}
+table.form > tbody > tr > td > label {
+	font-weight: normal;
+}
+table.form > tbody > tr > td > span.help {
+	display: block;
+	color:gray;
+}
+.fa-info-circle:after {
+	content: "\00A0\00A0";
+}
+#export_import_loading {
+	display: inline-block;
+}
+
+.form-group + .form-group {
+    border-top: 0;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.source-container {
+}
+
+.source-item {
+	margin-bottom: 20px;
+	border: 1px solid #e8e8e8;
+}
