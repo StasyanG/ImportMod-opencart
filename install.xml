@@ -5,6 +5,15 @@
 	<author>StasyanG</author>
 	<code>stasyang_importmod</code>
 
+	<file path="admin/view/template/common/header.tpl">
+		<operation>
+			<search><![CDATA[<?php foreach ($scripts as $script) { ?>]]></search>
+			<add position="before"><![CDATA[
+			<script src="view/javascript/jquery/autosize.min.js" type="text/javascript"></script>
+			]]></add>
+		</operation>
+	</file>
+
 	<file path="admin/controller/common/column_left.php">
 		<operation>
 			<search><![CDATA[if ($this->user->hasPermission('access', 'tool/log')) {]]></search>

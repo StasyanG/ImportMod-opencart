@@ -52,7 +52,21 @@ table.form > tbody > tr > td > span.help {
 .source-container {
 }
 
-.source-item {
+.panel-item {
 	margin-bottom: 20px;
 	border: 1px solid #e8e8e8;
+}
+
+.margin-bot-5 {
+    margin-bottom: 5px;
+}
+
+#gen-result-textarea {
+    min-height: 350px;
+    resize: vertical;
+}
+
+.max-height-800 {
+    max-height: 800px;
+    overflow-y: auto;
 }

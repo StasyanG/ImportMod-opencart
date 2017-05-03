@@ -212,6 +212,8 @@ class ControllerToolImportMod extends Controller {
 		$data['source_disable_link'] = $this->url->link('tool/import_mod/disable_source', '&token=' . $this->session->data['token'], $this->ssl);
 		$data['create_man_transcode'] = $this->url->link('tool/import_mod/create_man_transcode', '&token=' . $this->session->data['token'], $this->ssl);
 		$data['create_cat_transcode'] = $this->url->link('tool/import_mod/create_cat_transcode', '&token=' . $this->session->data['token'], $this->ssl);
+
+		$data['languages'] = $this->model_tool_import_mod->getLanguages();
 		
 		$data['sources'] = $this->model_tool_import_mod->getSources();
 		$data['man_transcodes'] = $this->model_tool_import_mod->getManufacturerTranscodes();

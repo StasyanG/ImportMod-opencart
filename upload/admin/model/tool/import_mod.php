@@ -2096,7 +2096,7 @@ class ModelToolImportMod extends Model {
 		return $store_ids;
 	}
 	
-	protected function getLanguages() {
+	public function getLanguages() {
 		$query = $this->db->query( "SELECT * FROM `".DB_PREFIX."language` WHERE `status`=1 ORDER BY `code`" );
 		return $query->rows;
 	}
