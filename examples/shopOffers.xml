@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<shop>
+  <currency id="USD" rate="63.8525"/>
+  <categories>
+    <category id="694">Мебель</category>
+    <category id="696" parentId="694">Диваны</category>
+    <category id="699" parentId="694">Кресла</category>
+  </categories>
+  <offers>
+    <offer id="00100">
+      <price>445566.00</price>
+      <categoryId>699</categoryId>
+      <picture>https://example.com/images/55d7875a74109909612a7ddf5bef65fc.jpg</picture>
+      <picture>https://example.com/images/777a47220ebefac187be5c9c78b33555.jpg</picture>
+      <name>Кресло Comfort XXL</name>
+      <vendor>VENDORNAME</vendor>
+      <model>Chair-200-XXL</model>
+      <stock>0</stock>
+      <param name="volume">0,4 м3</param>
+      <param name="weight" />
+      <param name="width">72</param>
+      <param name="height">70</param>
+      <param name="depth">71</param>
+      <param name="material">Ткань</param>
+    </offer>
+    <offer id="00101">
+      <price>770010.00</price>
+      <categoryId>696</categoryId>
+      <picture>https://example.com/images/9cba3dfe344438b1a7db82d9ba3ff8f3.jpg</picture>
+      <picture>https://example.com/images/a17bd8f5f6c6b1c369020fd7e1d84ad5.jpg</picture>
+      <name>Диван Comfort Lux</name>
+      <vendor>VENDORNAME</vendor>
+      <model>Sofa-0020</model>
+      <stock>0</stock>
+      <param name="volume">2,2 м3</param>
+      <param name="weight" />
+      <param name="width">275</param>
+      <param name="height">66</param>
+      <param name="depth">175</param>
+      <param name="material">Дерево/Ткань</param>
+    </offer>
+  </offers>
+</shop>

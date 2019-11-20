@@ -1,0 +1,37 @@
+{
+  "main_currency": "RUB",
+  "main_currency_usd_rate": "//shop/currency[@id='USD']@rate",
+
+  "categories_container": "//shop/categories",
+  "category_item": "//category",
+  "category_info": {
+    "category_id": "@id",
+    "parent_id": "@parentId",
+    "name(en-gb)": "@+",
+    "name(ru-ru)": "@+"
+  },
+  "products_container": "//shop/offers",
+  "product_item": "//offer",
+  "product_info": {
+    "product_id": "@id",
+    "name(en-gb)": "name@+",
+    "name(ru-ru)": "name@+",
+    "categories": "categoryId@+",
+    "quantity": "stock@+",
+    "model": "model@+",
+    "manufacturer": "vendor@+",
+    "images_container": "",
+    "image_item": "picture@+",
+    "price": "price@+",
+    "weight": "param[@name='weight']@+",
+    "length": "param[@name='depth']@+",
+    "width": "param[@name='width']@+",
+    "height": "param[@name='height']@+",
+    "description(en-gb)": "description@+",
+    "description(ru-ru)": "description@+",
+    "meta_title(en-gb)": "name@+",
+    "meta_title(ru-ru)": "name@+",
+    "meta_description(en-gb)": "description@+",
+    "meta_description(ru-ru)": "description@+"
+  }
+}
